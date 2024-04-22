@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Detail View</title>
+  </head>
+  <body>
+    <form action="{% url 'polls:vote' question.id %}" method="post">
+    <!--Part of flaw 1 Cross Site Request Forgery-->
+    <!--Flaw 1 fix, include following line:-->  
+    <!--{% csrf_token %}-->
+    <fieldset>
+        <!--Flaw 5 Cross Site Scripting-->
+        <legend><h1>{{ question.question_text|safe }}</h1></legend>
+        <!--Fix to flaw 5, remove the "|safe":-->
+        <!--<legend><h1>{{ question.question_text }}</h1></legend>-->
+        {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+        {% for choice in question.choice_set.all %}
+            <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}">
+            <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label><br>
+        {% endfor %}
+    </fieldset>
+    <input type="submit" value="Vote">
+    </form>
+  </body>
+</html>
